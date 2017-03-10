@@ -87,7 +87,7 @@ Installation
 
 ## zef
 ```
-zef install Web::Config
+zef install Web::Cache
 ```
 
 ## Manual
