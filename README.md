@@ -54,12 +54,26 @@ Config
 
 Currently only memory caching is supported. 
 
-
 ```perl6
 # Configure cache backend
 constant memory = cache-start size    => 2048,
                               backend => 'memory';
 ```
+
+## Todo:
+
+```perl6
+constant disk = cache-start path    => '/tmp/webcache/',
+                            backend => 'disk';
+
+constant memcached = cache-start servers => ["127.0.0.1:11211"],
+                                 backend => 'memcached';
+
+constant redis = cache-start host    => "127.0.0.1",
+                             port    => 6379,
+                             backend => 'redis';
+```
+
 
 Installation
 ============
