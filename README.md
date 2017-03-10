@@ -63,15 +63,22 @@ constant memory = cache-start size    => 2048,
 ## Todo:
 
 ```perl6
-constant disk = cache-start path    => '/tmp/webcache/',
-                            backend => 'disk';
+constant memory    = cache-start size    => 2048,
+                                 expires => 3600, # add expires parameter
+                                 backend => 'memory';
+
+constant disk      = cache-start path    => '/tmp/webcache/',
+                                 expires => 3600,
+                                 backend => 'disk';
 
 constant memcached = cache-start servers => ["127.0.0.1:11211"],
+                                 expires => 3600,
                                  backend => 'memcached';
 
-constant redis = cache-start host    => "127.0.0.1",
-                             port    => 6379,
-                             backend => 'redis';
+constant redis     = cache-start host    => "127.0.0.1",
+                                 port    => 6379,
+                                 expires => 3600,
+                                 backend => 'redis';
 ```
 
 
