@@ -85,17 +85,17 @@ constant redis     = cache-start host    => "127.0.0.1",
 Installation
 ============
 
+## zef
+```
+zef install Web::Config
+```
+
 ## Manual
 
 ```
 git clone https://github.com/scmorrison/perl6-Web-Cache.git
 cd perl6-Web-Cache/
 zef install .
-```
-
-## zef (coming soon)
-```
-# zef install Web::Config
 ```
 
 Todo
