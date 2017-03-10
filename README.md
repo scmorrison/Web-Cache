@@ -38,6 +38,15 @@ get / ^ '/template/' (.+) $ / => sub ($x) {
 }
 
 baile;
+
+# Test with ab:
+#
+# ab -n 1000 -c 10 http://0.0.0.0:3000/template/bailador 
+#
+# with Web::Cache:
+#  Requests per second:    165.66 [#/sec] (mean)
+# without Web::Cache:
+#  Requests per second:    23.88 [#/sec] (mean)
 ```
 
 Config
