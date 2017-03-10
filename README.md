@@ -32,9 +32,9 @@ get / ^ '/template/' (.+) $ / => sub ($x) {
     # will be run on initial cache insert only.
     # Once cache expiration is supported, this code
     # will re-run again when the key expires.
-    cache backend => memory,
-          key     => [$template, $x].join('-'),
-          content => { template($template, %{ name => $x }) };
+    webcache backend => memory,
+             key     => [$template, $x].join('-'),
+             content => { template($template, %{ name => $x }) };
 }
 
 baile;

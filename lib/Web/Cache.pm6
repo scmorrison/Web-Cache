@@ -49,7 +49,7 @@ sub cache-clear(%backend) is export returns Array {
 }
 
 # Cache a template
-sub cache(:&content, :%backend, Str :$key, Str :$expires_in) is export returns Str {
+sub webcache(:&content, :%backend, Str :$key, Str :$expires_in) is export returns Str {
     my $content = cache-get(%backend, $key);
     return $content if $content.defined;
     return cache-set( %backend, $key, content );
