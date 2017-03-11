@@ -4,6 +4,7 @@
     "name"         : "Web::Cache",
     "version"      : "0.000001",
     "description"  : "Perl 6 web-framework-neutral LRU caching module",
+    "tags"         : [ "Web", "Cache", "LRU" ],
     "depends"      : [
         "Cache::LRU"
     ],
