@@ -19,10 +19,10 @@ EOS
 
 
 # Memory
-constant memory = cache-start(size    => 2048,
-                              backend => 'memory');
+constant memory = cache-create-store(size    => 2048,
+                                     backend => 'memory');
 
-is memory<module>, 'Web::Cache::Memory', 'memory 1/7: load memory backend';
+is memory<backend>, 'memory', 'memory 1/7: load memory backend';
 
 # Memory: set
 my $m1 = cache-set(memory, $key, $content);
@@ -38,13 +38,13 @@ is $m3, $content, 'memory 4/7: cache remove key';
 
 # Memory: webcache initial key insert
 my $m4 = webcache(key     => $key,
-                  backend => memory,
+                  store   => memory,
                   content => { $content });
 is $m4, $content, 'memory 5/7: webcache initial key insert';
 
 # Memory: webcache subsequent key insert
 my $m5 = webcache(key     => $key,
-                  backend => memory,
+                  store   => memory,
                   content => { $content });
 is $m5, $content, 'memory 6/7: webcache subsequent key insert';
 

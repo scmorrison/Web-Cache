@@ -16,9 +16,9 @@ use Web::Cache;
 
 Bailador::import; # for the template to work
 
-# Configure cache backend
-constant memory = cache-start size    => 2048,
-                              backend => 'memory';
+# Create a new cache store
+constant memory = cache-create-store size    => 2048,
+                                     backend => 'memory';
 
 # TODO: Create multiple cache stores using different
 #       backends. This will enable caching certain 
@@ -32,7 +32,7 @@ get / ^ '/template/' (.+) $ / => sub ($x) {
     # will be run on initial cache insert only.
     # Once cache expiration is supported, this code
     # will re-run again when the key expires.
-    webcache backend => memory,
+    webcache store   => memory,
              key     => [$template, $x].join('-'),
              content => { template($template, %{ name => $x }) };
 }
@@ -55,30 +55,30 @@ Config
 Currently only memory caching is supported. 
 
 ```perl6
-# Configure cache backend
-constant memory = cache-start size    => 2048,
-                              backend => 'memory';
+# Create cache store
+constant memory = create-cache-store size    => 2048,
+                                     backend => 'memory';
 ```
 
 ## Todo:
 
 ```perl6
-constant memory    = cache-start size    => 2048,
-                                 expires => 3600, # add expires parameter
-                                 backend => 'memory';
+constant memory    = create-cache-store size    => 2048,
+                                        expires => 3600, # add expires parameter
+                                        backend => 'memory';
 
-constant disk      = cache-start path    => '/tmp/webcache/',
-                                 expires => 3600,
-                                 backend => 'disk';
+constant disk      = create-cache-store path    => '/tmp/webcache/',
+                                        expires => 3600,
+                                        backend => 'disk';
 
-constant memcached = cache-start servers => ["127.0.0.1:11211"],
-                                 expires => 3600,
-                                 backend => 'memcached';
+constant memcached = create-cache-store servers => ["127.0.0.1:11211"],
+                                        expires => 3600,
+                                        backend => 'memcached';
 
-constant redis     = cache-start host    => "127.0.0.1",
-                                 port    => 6379,
-                                 expires => 3600,
-                                 backend => 'redis';
+constant redis     = create-cache-store host    => "127.0.0.1",
+                                        port    => 6379,
+                                        expires => 3600,
+                                        backend => 'redis';
 ```
 
 

@@ -8,49 +8,44 @@ use Web::Cache::Memory;
 
 unit module Web::Cache:ver<0.000001>;
 
-sub cache-module-name($mod_name) returns Str {
-    return 'Web::Cache::' ~ $mod_name.tc;
+sub mod-name($backend) returns Str {
+    return 'Web::Cache::' ~ $backend.tc;
 }
 
-sub create-store($mod_name, %config) {
-    return &::($mod_name ~ '::load')(%config);
-}
+our sub cache-create-store(Int :$size    = 1024,
+                           Str :$backend = 'memory') is export returns Hash {
 
-our sub cache-start(Int :$size    = 1024,
-                    Str :$backend = 'memory') is export returns Hash {
+    my %config = size    => $size,
+                 backend => $backend;
 
-    my %config   = size    => $size,
-                   backend => $backend;
-    my $mod_name = cache-module-name $backend;
-
-    return %{ module => $mod_name,
-              store  => create-store $mod_name, %config };
+    return %{ backend => $backend,
+              store   => &::(mod-name($backend) ~ '::load')(%config) };
 }; 
 
 
 # Set a key / value in the cache
-sub cache-set(%backend, Str $key, Str $content) is export returns Str {
-    return &::(%backend<module> ~ '::set')(%backend<store>, $key, $content);
+sub cache-set(%store, Str $key, Str $content) is export returns Str {
+    return &::(mod-name(%store<backend>) ~ '::set')(%store<store>, $key, $content);
 }
 
 # Get a key from the cache
-sub cache-get(%backend, Str $key) is export returns Str {
-    return &::(%backend<module> ~ '::get')(%backend<store>, $key);
+sub cache-get(%store, Str $key) is export returns Str {
+    return &::(mod-name(%store<backend>) ~ '::get')(%store<store>, $key);
 }
 
 # Remove a key from the cache
-sub cache-remove(%backend, Str $key) is export returns Str {
-    return &::(%backend<module> ~ '::remove')(%backend<store>, $key);
+sub cache-remove(%store, Str $key) is export returns Str {
+    return &::(mod-name(%store<backend>) ~ '::remove')(%store<store>, $key);
 }
 
 # Clear the entire cache
-sub cache-clear(%backend) is export returns Array {
-    return &::(%backend<module> ~ '::clear')(%backend<store>);
+sub cache-clear(%store) is export returns Array {
+    return &::(mod-name(%store<backend>) ~ '::clear')(%store<store>);
 }
 
 # Cache a template
-sub webcache(:&content, :%backend, Str :$key, Str :$expires_in) is export returns Str {
-    my $content = cache-get(%backend, $key);
+sub webcache(:&content, :%store, Str :$key, Str :$expires_in) is export returns Str {
+    my $content = cache-get(%store, $key);
     return $content if $content.defined;
-    return cache-set( %backend, $key, content );
+    return cache-set( %store, $key, content );
 }
