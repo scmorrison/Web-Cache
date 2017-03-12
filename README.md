@@ -17,8 +17,8 @@ use Web::Cache;
 Bailador::import; # for the template to work
 
 # Create a new cache store
-constant memory = cache-create-store size    => 2048,
-                                     backend => 'memory';
+my $memory-cache = cache-create-store( size    => 2048,
+                                       backend => 'memory' );
 
 # TODO: Create multiple cache stores using different
 #       backends. This will enable caching certain 
@@ -27,15 +27,24 @@ constant memory = cache-create-store size    => 2048,
 # Cached templates!
 get / ^ '/template/' (.+) $ / => sub ($x) {
     my $template = 'tmpl.tt';
+    my %params   = %{ name => $x };
      
     # Any code passed as the `content` parameter
     # will be run on initial cache insert only.
     # Once cache expiration is supported, this code
     # will re-run again when the key expires.
-    webcache store   => memory,
-             key     => [$template, $x].join('-'),
-             content => { template($template, %{ name => $x }) };
+    $memory-cache( key     => [$template, $x].join('-'),
+                   content => {template($template, %params)} );
 }
+
+#
+# Remove a key
+#    $memory-cache( key    => [$template, $x].join('-'),
+#                   action => 'remove' );
+#
+# Empty / clear cache
+#    $memory-cache( action => 'clear' );
+#
 
 baile;
 
@@ -44,7 +53,7 @@ baile;
 # ab -n 1000 -c 10 http://0.0.0.0:3000/template/bailador 
 #
 # with Web::Cache:
-#  Requests per second:    165.66 [#/sec] (mean)
+#  Requests per second:    166.10 [#/sec] (mean)
 # without Web::Cache:
 #  Requests per second:    23.88 [#/sec] (mean)
 ```
@@ -56,29 +65,29 @@ Currently only memory caching is supported.
 
 ```perl6
 # Create cache store
-constant memory = create-cache-store size    => 2048,
-                                     backend => 'memory';
+my $memory-cache = create-cache-store( size    => 2048,
+                                       backend => 'memory' );
 ```
 
 ## Todo:
 
 ```perl6
-constant memory    = create-cache-store size    => 2048,
-                                        expires => 3600, # add expires parameter
-                                        backend => 'memory';
+my $memory-cache = create-cache-store( size    => 2048,
+                                       expires => 3600, # add expires parameter
+                                       backend => 'memory' );
 
-constant disk      = create-cache-store path    => '/tmp/webcache/',
-                                        expires => 3600,
-                                        backend => 'disk';
+my $disk-cache   = create-cache-store( path    => '/tmp/webcache/',
+                                       expires => 3600,
+                                       backend => 'disk' );
 
-constant memcached = create-cache-store servers => ["127.0.0.1:11211"],
-                                        expires => 3600,
-                                        backend => 'memcached';
+my $memcached    = create-cache-store( servers => ["127.0.0.1:11211"],
+                                       expires => 3600,
+                                       backend => 'memcached' );
 
-constant redis     = create-cache-store host    => "127.0.0.1",
-                                        port    => 6379,
-                                        expires => 3600,
-                                        backend => 'redis';
+my $redis        = create-cache-store( host    => "127.0.0.1",
+                                       port    => 6379,
+                                       expires => 3600,
+                                       backend => 'redis' );
 ```
 
 

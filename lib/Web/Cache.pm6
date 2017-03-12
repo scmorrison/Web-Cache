@@ -8,44 +8,66 @@ use Web::Cache::Memory;
 
 unit module Web::Cache:ver<0.000001>;
 
-sub mod-name($backend) returns Str {
+# Generate full module name from $backend shortname
+sub mod-name(Str $backend --> Str) {
     return 'Web::Cache::' ~ $backend.tc;
 }
 
-our sub cache-create-store(Int :$size    = 1024,
-                           Str :$backend = 'memory') is export returns Hash {
-
-    my %config = size    => $size,
-                 backend => $backend;
-
-    return %{ backend => $backend,
-              store   => &::(mod-name($backend) ~ '::load')(%config) };
-}; 
-
-
 # Set a key / value in the cache
-sub cache-set(%store, Str $key, Str $content) is export returns Str {
-    return &::(mod-name(%store<backend>) ~ '::set')(%store<store>, $key, $content);
+sub cache-set($store, $module, Str $key, Str $content --> Str) {
+    return &::($module ~ '::set')($store, $key, $content);
 }
 
 # Get a key from the cache
-sub cache-get(%store, Str $key) is export returns Str {
-    return &::(mod-name(%store<backend>) ~ '::get')(%store<store>, $key);
+sub cache-get($store, Str $module, Str $key --> Str) {
+    return &::($module ~ '::get')($store, $key);
 }
 
 # Remove a key from the cache
-sub cache-remove(%store, Str $key) is export returns Str {
-    return &::(mod-name(%store<backend>) ~ '::remove')(%store<store>, $key);
+sub cache-remove($store, Str $module, Str $key --> Str) {
+    return &::($module ~ '::remove')($store, $key);
 }
 
 # Clear the entire cache
-sub cache-clear(%store) is export returns Array {
-    return &::(mod-name(%store<backend>) ~ '::clear')(%store<store>);
+sub cache-clear($store, Str $module --> Array) {
+    return &::($module ~ '::clear')($store);
 }
 
-# Cache a template
-sub webcache(:&content, :%store, Str :$key, Str :$expires_in) is export returns Str {
-    my $content = cache-get(%store, $key);
-    return $content if $content.defined;
-    return cache-set( %store, $key, content );
+# Build a new sub that provides interface to cache 
+# backend module and actions.
+sub create-store-sub(:$backend_module, :%config --> Block) {
+
+  my $store_instance = &::($backend_module ~ '::load')(%config);
+
+    return -> :$store  = $store_instance,
+              :$module = $backend_module,
+              :$action,
+              :&content,
+              :$key,
+              :$expires_in --> Str {
+
+        given $action {
+            when 'clear' {
+               cache-clear( $store, $module ).Str;
+            }
+            when 'remove' {
+               cache-remove( $store, $module, $key );
+            }
+            default {
+              my $content = cache-get( $store, $module, $key );
+              $content.defined ?? $content !! cache-set( $store, $module, $key, content );
+            }
+        }
+    };
 }
+
+# Cache store initialization
+sub cache-create-store(Int :$size    = 1024,
+                       Str :$backend = 'memory' --> Block) is export {
+
+    my $module = mod-name($backend);
+    my %config = size    => $size,
+                 backend => $backend;
+    return create-store-sub(backend_module => $module, config => %config);
+}; 
+

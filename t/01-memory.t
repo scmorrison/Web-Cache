@@ -19,35 +19,31 @@ EOS
 
 
 # Memory
-constant memory = cache-create-store(size    => 2048,
-                                     backend => 'memory');
+my $memory-store = cache-create-store size    => 2048,
+                                      backend => 'memory';
 
-is memory<backend>, 'memory', 'memory 1/7: load memory backend';
+is $memory-store.WHAT, Block, 'memory 1/7: create memory closure';
 
 # Memory: set
-my $m1 = cache-set(memory, $key, $content);
+my $m1 = $memory-store(key => $key, content => { $content });
 is $m1, $content, 'memory 2/7: cache set key';
 
 # Memory: get
-my $m2 = cache-get(memory, $key);
+my $m2 = $memory-store(key => $key);
 is $m2, $content, 'memory 3/7: cache get key';
 
 # Memory: remove
-my $m3 = cache-remove(memory, $key);
+my $m3 = $memory-store(key => $key, action => 'remove');
 is $m3, $content, 'memory 4/7: cache remove key';
 
 # Memory: webcache initial key insert
-my $m4 = webcache(key     => $key,
-                  store   => memory,
-                  content => { $content });
+my $m4 = $memory-store(key => $key, content => { $content });
 is $m4, $content, 'memory 5/7: webcache initial key insert';
 
 # Memory: webcache subsequent key insert
-my $m5 = webcache(key     => $key,
-                  store   => memory,
-                  content => { $content });
+my $m5 = $memory-store(key => $key, content => { $content });
 is $m5, $content, 'memory 6/7: webcache subsequent key insert';
 
 # Memory: webcache clear
-my $m6 = cache-clear(memory);
-is $m6, (), 'memory 7/7: cache clear';
+my $m6 = $memory-store(action => 'clear');
+is $m6, '', 'memory 7/7: cache clear';
