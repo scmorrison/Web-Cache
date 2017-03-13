@@ -39,13 +39,13 @@ sub create-store-sub(:$backend_module, :%config --> Block) {
 
     my $store_instance = &::($backend_module ~ '::load')(%config);
 
-    return -> &content?,                  # Callback that generates the content for the cache
-              :$store  = $store_instance, # Actual cache instance
-              :$module = $backend_module, # Module that manages cache type
-              Bool :$clear  = False,      # Clears all keys from cache
-              Bool :$remove = False,      # When passed with key, removes key from cache
-              :$key,                      # Key for cache ID
-              :$expires_in --> Str {      # Expire the provided key in n seconds
+    return -> &content?,                       # Callback that generates the content for the cache
+              :$store       = $store_instance, # Actual cache instance
+              :$module      = $backend_module, # Module that manages cache type
+              Bool :$clear  = False,           # Clears all keys from cache
+              Bool :$remove = False,           # When passed with key, removes key from cache
+              :$key,                           # Key for cache ID
+              :$expires_in --> Str {           # Expire the provided key in n seconds
         
         # Remove a key or clear everything
         when $clear  { cache-clear( $store, $module ).Str }
