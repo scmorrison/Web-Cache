@@ -39,10 +39,10 @@ sub create-store-sub(:$backend_module, :%config --> Block) {
 
     my $store_instance = &::($backend_module ~ '::load')(%config);
 
-    return -> :$store  = $store_instance, # Actual cache instance
+    return -> &content?,                  # Callback that generates the content for the cache
+              :$store  = $store_instance, # Actual cache instance
               :$module = $backend_module, # Module that manages cache type
               :$action,                   # Action: only used for remove or clear
-              :&content,                  # Callback that generates the content for the cache
               :$key,                      # Key for cache ID
               :$expires_in --> Str {      # Expire the provided key in n seconds
 
