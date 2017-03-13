@@ -37,14 +37,14 @@ sub cache-clear($store, Str $module --> Array) {
 # backend module and actions.
 sub create-store-sub(:$backend_module, :%config --> Block) {
 
-  my $store_instance = &::($backend_module ~ '::load')(%config);
+    my $store_instance = &::($backend_module ~ '::load')(%config);
 
-    return -> :$store  = $store_instance,
-              :$module = $backend_module,
-              :$action,
-              :&content,
-              :$key,
-              :$expires_in --> Str {
+    return -> :$store  = $store_instance, # Actual cache instance
+              :$module = $backend_module, # Module that manages cache type
+              :$action,                   # Action: only used for remove or clear
+              :&content,                  # Callback that generates the content for the cache
+              :$key,                      # Key for cache ID
+              :$expires_in --> Str {      # Expire the provided key in n seconds
 
         given $action {
             when 'clear' {
@@ -54,11 +54,10 @@ sub create-store-sub(:$backend_module, :%config --> Block) {
                cache-remove( $store, $module, $key );
             }
             default {
-              my $content = cache-get( $store, $module, $key );
-              $content.defined ?? $content !! cache-set( $store, $module, $key, content );
+              cache-get( $store, $module, $key ) || cache-set( $store, $module, $key, content );
             }
         }
-    };
+    }
 }
 
 # Cache store initialization
