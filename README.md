@@ -30,10 +30,10 @@ get / ^ '/template/' (.+) $ / => sub ($x) {
     my %params          = %{ name => $x };
     my $fancy_cache_key = [$template, $x].join('-');
      
-    # Any code passed as the `content` parameter
-    # will be run on initial cache insert only.
-    # Once cache expiration is supported, this code
-    # will re-run again when the key expires.
+    # Any callback passed as will be run on initial
+    # cache insert only. Once cache expiration is
+    # supported, this code will re-run again when
+    # the key expires.
     $memory-cache(key => $fancy_cache_key, {
         template($template, %params)
     });
