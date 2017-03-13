@@ -47,12 +47,12 @@ sub create-store-sub(:$backend_module, :%config --> Block) {
               :$key,                      # Key for cache ID
               :$expires_in --> Str {      # Expire the provided key in n seconds
         
-           # Remove a key or clear everything
-           when $clear  { cache-clear( $store, $module ).Str }
-           when $remove { cache-remove( $store, $module, $key ) }
+        # Remove a key or clear everything
+        when $clear  { cache-clear( $store, $module ).Str }
+        when $remove { cache-remove( $store, $module, $key ) }
 
-           # Otherwise, store / return key from cache
-           cache-get( $store, $module, $key ) || cache-set( $store, $module, $key, content );
+        # Otherwise, store / return key from cache
+        cache-get( $store, $module, $key ) || cache-set( $store, $module, $key, content );
     }
 }
 
