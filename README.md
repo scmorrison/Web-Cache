@@ -26,25 +26,25 @@ my $memory-cache = cache-create-store( size    => 2048,
 
 # Cached templates!
 get / ^ '/template/' (.+) $ / => sub ($x) {
-    my $template = 'tmpl.tt';
-    my %params   = %{ name => $x };
+    my $template        = 'tmpl.tt';
+    my %params          = %{ name => $x };
+    my $fancy_cache_key = [$template, $x].join('-');
      
     # Any code passed as the `content` parameter
     # will be run on initial cache insert only.
     # Once cache expiration is supported, this code
     # will re-run again when the key expires.
-    $memory-cache(key => [$template, $x].join('-'), {
+    $memory-cache(key => $fancy_cache_key, {
                       template($template, %params)
                   });
 }
 
 #
 # Remove a key
-#    $memory-cache( key    => [$template, $x].join('-'),
-#                   action => 'remove' );
+#    $memory-cache( key => $fancy_cache_key, :remove );
 #
 # Empty / clear cache
-#    $memory-cache( action => 'clear' );
+#    $memory-cache( :clear );
 #
 
 baile;

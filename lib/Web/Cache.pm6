@@ -42,21 +42,17 @@ sub create-store-sub(:$backend_module, :%config --> Block) {
     return -> &content?,                  # Callback that generates the content for the cache
               :$store  = $store_instance, # Actual cache instance
               :$module = $backend_module, # Module that manages cache type
-              :$action,                   # Action: only used for remove or clear
+              Bool :$clear  = False,      # Clears all keys from cache
+              Bool :$remove = False,      # When passed with key, removes key from cache
               :$key,                      # Key for cache ID
               :$expires_in --> Str {      # Expire the provided key in n seconds
+        
+           # Remove a key or clear everything
+           when $clear  { cache-clear( $store, $module ).Str }
+           when $remove { cache-remove( $store, $module, $key ) }
 
-        given $action {
-            when 'clear' {
-               cache-clear( $store, $module ).Str;
-            }
-            when 'remove' {
-               cache-remove( $store, $module, $key );
-            }
-            default {
-               cache-get( $store, $module, $key ) || cache-set( $store, $module, $key, content );
-            }
-        }
+           # Otherwise, store / return key from cache
+           cache-get( $store, $module, $key ) || cache-set( $store, $module, $key, content );
     }
 }
 
