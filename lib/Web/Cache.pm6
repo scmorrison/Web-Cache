@@ -54,7 +54,7 @@ sub create-store-sub(:$backend_module, :%config --> Block) {
                cache-remove( $store, $module, $key );
             }
             default {
-              cache-get( $store, $module, $key ) || cache-set( $store, $module, $key, content );
+               cache-get( $store, $module, $key ) || cache-set( $store, $module, $key, content );
             }
         }
     }
