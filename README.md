@@ -30,7 +30,7 @@ get / ^ '/template/' (.+) $ / => sub ($x) {
     my %params          = %{ name => $x };
     my $fancy_cache_key = [$template, $x].join('-');
      
-    # Any callback passed as will be run on initial
+    # Any callback passed will be run on initial
     # cache insert only. Once cache expiration is
     # supported, this code will re-run again when
     # the key expires.
