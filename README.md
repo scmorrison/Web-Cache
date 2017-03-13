@@ -35,8 +35,8 @@ get / ^ '/template/' (.+) $ / => sub ($x) {
     # Once cache expiration is supported, this code
     # will re-run again when the key expires.
     $memory-cache(key => $fancy_cache_key, {
-                      template($template, %params)
-                  });
+        template($template, %params)
+    });
 }
 
 #
