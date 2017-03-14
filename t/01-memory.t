@@ -34,7 +34,6 @@ is $m2, $content, 'memory 3/7: cache get key';
 
 # Memory: remove
 my $m3 = $memory-store(key => $key, :remove);
-#my $m3 = $memory-store(key => $key, action => 'remove');
 is $m3, $content, 'memory 4/7: cache remove key';
 
 # Memory: webcache initial key insert
@@ -47,5 +46,4 @@ is $m5, $content, 'memory 6/7: webcache subsequent key insert';
 
 # Memory: webcache clear
 my $m6 = $memory-store(:clear);
-#my $m6 = $memory-store(action => 'clear');
 is $m6, '', 'memory 7/7: cache clear';
