@@ -19,7 +19,7 @@ use Web::Cache;
 Bailador::import; # for the template to work
 
 # Create a new cache store
-my $memory-cache = cache-create-store( size    => 2048,
+my &memory-cache = cache-create-store( size    => 2048,
                                        backend => 'memory' );
 
 # TODO: Create multiple cache stores using different
@@ -36,17 +36,17 @@ get / ^ '/template/' (.+) $ / => sub ($x) {
     # cache insert only. Once cache expiration is
     # supported, this code will re-run again when
     # the key expires.
-    $memory-cache(key => $fancy_cache_key, {
+    memory-cache(key => $fancy_cache_key, {
         template($template, %params)
     });
 }
 
 #
 # Remove a key
-#    $memory-cache( key => $fancy_cache_key, :remove );
+#    memory-cache( key => $fancy_cache_key, :remove );
 #
 # Empty / clear cache
-#    $memory-cache( :clear );
+#    memory-cache( :clear );
 #
 
 baile;
@@ -59,26 +59,26 @@ Currently only memory caching is supported.
 
 ```perl6
 # Create cache store
-my $memory-cache = create-cache-store( size    => 2048,
+my &memory-cache = create-cache-store( size    => 2048,
                                        backend => 'memory' );
 ```
 
 ## Todo:
 
 ```perl6
-my $memory-cache = create-cache-store( size    => 2048,
+my &memory-cache = create-cache-store( size    => 2048,
                                        expires => 3600, # add expires parameter
                                        backend => 'memory' );
 
-my $disk-cache   = create-cache-store( path    => '/tmp/webcache/',
+my &disk-cache   = create-cache-store( path    => '/tmp/webcache/',
                                        expires => 3600,
                                        backend => 'disk' );
 
-my $memcached    = create-cache-store( servers => ["127.0.0.1:11211"],
+my &memcached    = create-cache-store( servers => ["127.0.0.1:11211"],
                                        expires => 3600,
                                        backend => 'memcached' );
 
-my $redis        = create-cache-store( host    => "127.0.0.1",
+my &redis        = create-cache-store( host    => "127.0.0.1",
                                        port    => 6379,
                                        expires => 3600,
                                        backend => 'redis' );
