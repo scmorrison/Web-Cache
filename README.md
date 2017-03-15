@@ -3,6 +3,8 @@ Web::Cache [![Build Status](https://travis-ci.org/scmorrison/perl6-Web-Cache.svg
 
 Web::Cache is a Perl 6 web framework independant LRU caching module.
 
+The goal of this module is to provide a variety of cache backend wrappers and utilities that simplify caching tasks within the context of a web application.
+
 **note:** this is very much a work in progress. Ideas, issues, and pull-requests welcome.
 
 Usage
