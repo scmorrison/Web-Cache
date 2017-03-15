@@ -76,14 +76,16 @@ Web::Cache - Web framework independant caching module.
 
 =begin code 
 use Web::Cache;
-my $memory-cache = cache-create-store( size    => 2048,
+my &memory-cache = cache-create-store( size    => 2048,
                                        backend => 'memory' );
-$memory-cache(key => $cache-key, {
+memory-cache(key => $cache-key, {
     my $data = expensive-db-query(...);
     expensive-template-step($data);
 });
-$memory-cache( key => $fancy_cache_key, :remove );
-$memory-cache( :clear );
+
+memory-cache( key => $fancy_cache_key, :remove );
+
+memory-cache( :clear );
 =end code
 
 =head1 DESCRIPTION
