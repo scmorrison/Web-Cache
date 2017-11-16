@@ -15,5 +15,5 @@
         "Web::Cache::Memory" : "lib/Web/Cache/Memory.pm6"
     },
     "authors"      : [ "Sam Morrison" ],
-    "source-url"   : "git://github.com/smorrison/per6-Web-Cache.git"
+    "source-url"   : "git://github.com/scmorrison/perl6-Web-Cache.git"
 }
